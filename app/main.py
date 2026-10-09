@@ -30,37 +30,8 @@ class Society(Base):
 class Flat(Base):
     __tablename__='flats'; __table_args__=(UniqueConstraint('society_id','flat_number'),)
     id:Mapped[int]=mapped_column(primary_key=True); society_id:Mapped[int]=mapped_column(ForeignKey('societies.id'),index=True); flat_number:Mapped[str]=mapped_column(String(30)); owner_name:Mapped[str]=mapped_column(String(160),default=''); owner_email:Mapped[str]=mapped_column(String(254),default=''); owner_phone:Mapped[str]=mapped_column(String(30),default=''); maintenance_amount:Mapped[int]=mapped_column(Integer,default=3000)
-
 class User(Base):
-    __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-
-    society_id: Mapped[int] = mapped_column(
-        ForeignKey("societies.id"),
-        index=True
-    )
-
-    email: Mapped[str] = mapped_column(
-        String(254),
-        unique=True,
-        index=True
-    )
-
-    full_name: Mapped[str] = mapped_column(String(160))
-    phone: Mapped[str] = mapped_column(String(30), default="")
-    password_hash: Mapped[str] = mapped_column(String(300))
-    role: Mapped[str] = mapped_column(String(20), default="owner")
-    approved: Mapped[bool] = mapped_column(Boolean, default=False)
-
-    flat_id: Mapped[int | None] = mapped_column(
-        ForeignKey("flats.id"),
-        nullable=True
-    )
-
-    # Relationship to the society this user belongs to
-    society: Mapped["Society"] = relationship()
-
+    __tablename__='users'; id:Mapped[int]=mapped_column(primary_key=True); society_id:Mapped[int]=mapped_column(ForeignKey('societies.id'),index=True); email:Mapped[str]=mapped_column(String(254),unique=True,index=True); full_name:Mapped[str]=mapped_column(String(160)); phone:Mapped[str]=mapped_column(String(30),default=''); password_hash:Mapped[str]=mapped_column(String(300)); role:Mapped[str]=mapped_column(String(20),default='owner'); approved:Mapped[bool]=mapped_column(Boolean,default=False); flat_id:Mapped[int|None]=mapped_column(ForeignKey('flats.id'),nullable=True)
 class Invoice(Base):
     __tablename__='invoices'; __table_args__=(UniqueConstraint('flat_id','billing_month'),)
     id:Mapped[int]=mapped_column(primary_key=True); society_id:Mapped[int]=mapped_column(ForeignKey('societies.id'),index=True); flat_id:Mapped[int]=mapped_column(ForeignKey('flats.id'),index=True); billing_month:Mapped[str]=mapped_column(String(7)); amount:Mapped[int]=mapped_column(Integer); due_date:Mapped[date]=mapped_column(Date); status:Mapped[str]=mapped_column(String(20),default='unpaid'); created_at:Mapped[datetime]=mapped_column(DateTime,default=datetime.utcnow)
